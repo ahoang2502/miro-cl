@@ -19,8 +19,14 @@ import {
 	Color,
 	LayerType,
 	Point,
+	Side,
+	XYWH,
 } from "@/types/canvas";
-import { connectionIdToColor, pointerEventToCanvasPoint } from "@/lib/utils";
+import {
+	connectionIdToColor,
+	pointerEventToCanvasPoint,
+	resizeBounds,
+} from "@/lib/utils";
 import { CursorsPresence } from "./CursorsPresence";
 import { Info } from "./Info";
 import { Participants } from "./Participants";
@@ -50,28 +56,6 @@ export const Canvas = ({ boardId }: CanvasProps) => {
 	const history = useHistory();
 	const canUndo = useCanUndo();
 	const canRedo = useCanRedo();
-
-	const onPointerMove = useMutation(
-		({ setMyPresence }, e: React.PointerEvent) => {
-			e.preventDefault();
-
-			const current = pointerEventToCanvasPoint(e, camera);
-
-			setMyPresence({ cursor: current });
-		},
-		[]
-	);
-
-	const onPointerLeave = useMutation(({ setMyPresence }) => {
-		setMyPresence({ cursor: null });
-	}, []);
-
-	const onWheel = useCallback((e: React.WheelEvent) => {
-		setCamera((camera) => ({
-			x: camera.x - e.deltaX,
-			y: camera.y - e.deltaY,
-		}));
-	}, []);
 
 	const insertLayer = useMutation(
 		(
@@ -105,6 +89,50 @@ export const Canvas = ({ boardId }: CanvasProps) => {
 		},
 		[lastUsedColor]
 	);
+
+	const resizeSelectedLayer = useMutation(
+		({ storage, self }, point: Point) => {
+			if (canvasState.mode !== CanvasMode.Resizing) return;
+
+			const bounds = resizeBounds(
+				canvasState.initialBounds,
+				canvasState.corner,
+				point
+			);
+
+			const liveLayers = storage.get("layers");
+			const layer = liveLayers.get(self.presence.selection[0]);
+
+			if (layer) layer.update(bounds);
+		},
+		[canvasState]
+	);
+
+	const onPointerMove = useMutation(
+		({ setMyPresence }, e: React.PointerEvent) => {
+			e.preventDefault();
+
+			const current = pointerEventToCanvasPoint(e, camera);
+
+			if (canvasState.mode === CanvasMode.Resizing) {
+				resizeSelectedLayer(current);
+			}
+
+			setMyPresence({ cursor: current });
+		},
+		[canvasState, resizeSelectedLayer, camera]
+	);
+
+	const onPointerLeave = useMutation(({ setMyPresence }) => {
+		setMyPresence({ cursor: null });
+	}, []);
+
+	const onWheel = useCallback((e: React.WheelEvent) => {
+		setCamera((camera) => ({
+			x: camera.x - e.deltaX,
+			y: camera.y - e.deltaY,
+		}));
+	}, []);
 
 	const onPointerUp = useMutation(
 		({}, e) => {
@@ -142,6 +170,15 @@ export const Canvas = ({ boardId }: CanvasProps) => {
 			setCanvasState({ mode: CanvasMode.Translating, current: point });
 		},
 		[setCanvasState, camera, history, canvasState.mode]
+	);
+
+	const onResizeHandlePointerDown = useCallback(
+		(corner: Side, initialBounds: XYWH) => {
+			history.pause();
+
+			setCanvasState({ mode: CanvasMode.Resizing, initialBounds, corner });
+		},
+		[history]
 	);
 
 	const selections = useOthersMapped((other) => other.presence.selection);
@@ -194,7 +231,7 @@ export const Canvas = ({ boardId }: CanvasProps) => {
 						/>
 					))}
 
-					<SelectionBox onResizeHandlePointerDown={() =>{}} />
+					<SelectionBox onResizeHandlePointerDown={onResizeHandlePointerDown} />
 					<CursorsPresence />
 				</g>
 			</svg>

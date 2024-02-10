@@ -38,6 +38,7 @@ export const SelectionBox = memo(
 					height={bounds.height}
 				/>
 
+				{/* Resizing handlers */}
 				{isShowingHandles && (
 					<>
 						<rect
@@ -56,6 +57,7 @@ export const SelectionBox = memo(
 								e.stopPropagation();
 
 								// Resize handler
+								onResizeHandlePointerDown(Side.Top + Side.Left, bounds);
 							}}
 						/>
 
@@ -75,6 +77,7 @@ export const SelectionBox = memo(
 								e.stopPropagation();
 
 								// Resize handler
+								onResizeHandlePointerDown(Side.Top, bounds);
 							}}
 						/>
 
@@ -94,6 +97,7 @@ export const SelectionBox = memo(
 								e.stopPropagation();
 
 								// Resize handler
+								onResizeHandlePointerDown(Side.Top + Side.Right, bounds);
 							}}
 						/>
 
@@ -113,44 +117,7 @@ export const SelectionBox = memo(
 								e.stopPropagation();
 
 								// Resize handler
-							}}
-						/>
-
-						<rect
-							className="fill-white stroke-1 stroke-blue-500 "
-							x={0}
-							y={0}
-							style={{
-								cursor: "ns-resize",
-								width: `${HANDLE_WIDTH}px`,
-								height: `${HANDLE_WIDTH}px`,
-								transform: `translate(${
-									bounds.x - HANDLE_WIDTH / 2 + bounds.width / 2
-								}px, ${bounds.y - HANDLE_WIDTH / 2 + bounds.height}px)`,
-							}}
-							onPointerDown={(e) => {
-								e.stopPropagation();
-
-								// Resize handler
-							}}
-						/>
-
-						<rect
-							className="fill-white stroke-1 stroke-blue-500 "
-							x={0}
-							y={0}
-							style={{
-								cursor: "nesw-resize",
-								width: `${HANDLE_WIDTH}px`,
-								height: `${HANDLE_WIDTH}px`,
-								transform: `translate(${bounds.x - HANDLE_WIDTH / 2}px, ${
-									bounds.y - HANDLE_WIDTH / 2 + bounds.height
-								}px)`,
-							}}
-							onPointerDown={(e) => {
-								e.stopPropagation();
-
-								// Resize handler
+								onResizeHandlePointerDown(Side.Right, bounds);
 							}}
 						/>
 
@@ -170,6 +137,47 @@ export const SelectionBox = memo(
 								e.stopPropagation();
 
 								// Resize handler
+								onResizeHandlePointerDown(Side.Bottom + Side.Right, bounds);
+							}}
+						/>
+
+						<rect
+							className="fill-white stroke-1 stroke-blue-500 "
+							x={0}
+							y={0}
+							style={{
+								cursor: "ns-resize",
+								width: `${HANDLE_WIDTH}px`,
+								height: `${HANDLE_WIDTH}px`,
+								transform: `translate(${
+									bounds.x - HANDLE_WIDTH / 2 + bounds.width / 2
+								}px, ${bounds.y - HANDLE_WIDTH / 2 + bounds.height}px)`,
+							}}
+							onPointerDown={(e) => {
+								e.stopPropagation();
+
+								// Resize handler
+								onResizeHandlePointerDown(Side.Bottom, bounds);
+							}}
+						/>
+
+						<rect
+							className="fill-white stroke-1 stroke-blue-500 "
+							x={0}
+							y={0}
+							style={{
+								cursor: "nesw-resize",
+								width: `${HANDLE_WIDTH}px`,
+								height: `${HANDLE_WIDTH}px`,
+								transform: `translate(${bounds.x - HANDLE_WIDTH / 2}px, ${
+									bounds.y - HANDLE_WIDTH / 2 + bounds.height
+								}px)`,
+							}}
+							onPointerDown={(e) => {
+								e.stopPropagation();
+
+								// Resize handler
+								onResizeHandlePointerDown(Side.Bottom + Side.Left, bounds);
 							}}
 						/>
 
@@ -189,6 +197,7 @@ export const SelectionBox = memo(
 								e.stopPropagation();
 
 								// Resize handler
+								onResizeHandlePointerDown(Side.Left, bounds);
 							}}
 						/>
 					</>
