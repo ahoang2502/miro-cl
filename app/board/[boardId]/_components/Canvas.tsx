@@ -26,6 +26,7 @@ import { Info } from "./Info";
 import { Participants } from "./Participants";
 import { Toolbar } from "./Toolbar";
 import { LayerPreview } from "./LayerPreview";
+import { SelectionBox } from "./SelectionBox";
 
 const MAX_LAYERS = 100;
 
@@ -192,6 +193,8 @@ export const Canvas = ({ boardId }: CanvasProps) => {
 							selectionColor={layerIdsToColorSelection[layerId]}
 						/>
 					))}
+
+					<SelectionBox onResizeHandlePointerDown={() =>{}} />
 					<CursorsPresence />
 				</g>
 			</svg>
