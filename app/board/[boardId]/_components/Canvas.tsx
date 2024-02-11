@@ -33,6 +33,7 @@ import { Participants } from "./Participants";
 import { Toolbar } from "./Toolbar";
 import { LayerPreview } from "./LayerPreview";
 import { SelectionBox } from "./SelectionBox";
+import { SelectionTools } from "./SelectionTools";
 
 const MAX_LAYERS = 100;
 
@@ -46,9 +47,9 @@ export const Canvas = ({ boardId }: CanvasProps) => {
 	});
 	const [camera, setCamera] = useState<Camera>({ x: 0, y: 0 });
 	const [lastUsedColor, setLastUsedColor] = useState<Color>({
-		r: 200,
-		g: 255,
-		b: 156,
+		r: 250,
+		g: 150,
+		b: 200,
 	});
 
 	const layerIds = useStorage((root) => root.layerIds);
@@ -176,7 +177,7 @@ export const Canvas = ({ boardId }: CanvasProps) => {
 				canvasState.mode === CanvasMode.None ||
 				canvasState.mode === CanvasMode.Pressing
 			) {
-				unselectLayers()
+				unselectLayers();
 
 				setCanvasState({ mode: CanvasMode.None });
 			} else if (canvasState.mode === CanvasMode.Inserting)
@@ -263,6 +264,8 @@ export const Canvas = ({ boardId }: CanvasProps) => {
 				undo={history.undo}
 				redo={history.redo}
 			/>
+
+			<SelectionTools camera={camera} setLastUsedColor={setLastUsedColor} />
 
 			<svg
 				className="h-[100vh] w-[100vw] "
