@@ -253,7 +253,7 @@ export const Canvas = ({ boardId }: CanvasProps) => {
 	}, [selections]);
 
 	return (
-		<main className="h-full w-full relative bg-neutral-200 touch-none">
+		<main className="h-full w-full relative bg-neutral-200/50 touch-none">
 			<Info boardId={boardId} />
 			<Participants />
 			<Toolbar
