@@ -27,7 +27,9 @@ export const EmptyBoards = () => {
 
 				router.push(`/board/${id}`);
 			})
-			.catch(() => toast.error("Failed to create board. Please try again!"));
+			.catch(() => {
+				toast.error("Failed to create board. Please try again!");
+			});
 	};
 
 	return (
