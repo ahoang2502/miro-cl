@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 
 import { RenameModal } from "@/components/modals/RenameModal";
+import { ProModal } from "@/components/modals/ProModal";
 
 export const ModalProvider = () => {
 	const [isMounted, setIsMounted] = useState(false);
@@ -16,6 +17,7 @@ export const ModalProvider = () => {
 	return (
 		<>
 			<RenameModal />
+			<ProModal />
 		</>
 	);
 };

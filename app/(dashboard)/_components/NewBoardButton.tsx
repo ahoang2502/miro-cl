@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useApiMutation } from "@/hooks/use-api-mutation";
 import { api } from "@/convex/_generated/api";
+import { useProModal } from "@/store/use-pro-modal";
 
 interface NewBoardButtonProps {
 	orgId: string;
@@ -15,7 +16,8 @@ interface NewBoardButtonProps {
 }
 
 export const NewBoardButton = ({ orgId, disabled }: NewBoardButtonProps) => {
-	const router= useRouter()
+	const router = useRouter();
+	const { onOpen } = useProModal();
 
 	const { mutate, pending } = useApiMutation(api.board.create);
 
@@ -29,7 +31,10 @@ export const NewBoardButton = ({ orgId, disabled }: NewBoardButtonProps) => {
 
 				router.push(`/board/${id}`);
 			})
-			.catch(() => toast.error("Failed to create board. Please try again."));
+			.catch(() => {
+				toast.error("Failed to create board. Please try again.");
+				onOpen();
+			});
 	};
 
 	return (
